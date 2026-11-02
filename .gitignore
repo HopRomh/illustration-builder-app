@@ -1,0 +1,37 @@
+# Локальные следы разработки
+.local-prompts/
+.playwright-mcp/
+
+# Зависимости
+node_modules/
+
+# Сборка
+dist/
+build/
+
+# Окружение
+.env
+.env.local
+.env.*.local
+*.local
+
+# Временные файлы
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Артефакты тестов и Playwright
+test-results/
+playwright-report/
+coverage/
+
+# Сгенерированные данные (npm run sync-library в predev/prebuild)
+public/data/
+public/assets/library/
+
+# Редакторы
+.vscode/*
+!.vscode/extensions.json
+.idea/

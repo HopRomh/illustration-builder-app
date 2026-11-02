@@ -1,0 +1,152 @@
+{
+  "_note": "Источник правды для каталога. Скрипт не угадывает по именам и не меняет эту карту. Каждый SVG из assets/raw/ встречается ровно один раз: в objects, в excluded, в palettes или в backdrops. Папки разрешаются через folders по ключу «{type}-{size}». Имена/теги — для поиска в сценариях 1 и 2.",
+  "folders": {
+    "main-L": "Главные объкты размер L",
+    "main-S": "Главные объекты Размер S",
+    "background-L": "Фоновые объекты размер L",
+    "background-S": "Фоновые объекты размер S",
+    "backdrop-L": "Тестовое _ иллюстрации Фоны Размер L",
+    "backdrop-S": "Тестовое _ иллюстрации Фоны размер S",
+    "palette-L": "Тестовое _ иллюстрации Фоны Размер L",
+    "palette-S": "Тестовое _ иллюстрации Фоны размер S"
+  },
+  "objects": [
+    {
+      "id": "book",
+      "name": "Книга",
+      "tags": ["книга", "чтение", "учёба", "знания", "литература", "образование", "book"],
+      "main-L": "Книга.svg",
+      "background-L": "Книга.svg",
+      "main-S": "Group 2136136335.svg",
+      "background-S": "Group 2136136341.svg",
+      "pairing": "L — по имени; S — по карте",
+      "verified": "S = 0.5x L (723x489 vs 1446x977), aspect 1.4800/1.4785; main↔background в S: 89% путей совпадают"
+    },
+    {
+      "id": "wallet",
+      "name": "Кошелек",
+      "tags": ["кошелек", "деньги", "финансы", "оплата", "бюджет", "wallet"],
+      "main-L": "Кошелек.svg",
+      "background-L": "Кошелек.svg",
+      "main-S": "Кошелек.svg",
+      "background-S": "Кошелек.svg",
+      "pairing": "по имени",
+      "verified": "L 631x397 / S 316x199"
+    },
+    {
+      "id": "lamp",
+      "name": "Лампа",
+      "tags": ["лампа", "свет", "освещение", "идея", "яркость", "lamp"],
+      "main-L": "Лампа.svg",
+      "background-L": "Лампа.svg",
+      "main-S": "Лампа.svg",
+      "background-S": "Лампа.svg",
+      "pairing": "по имени",
+      "verified": "L 946x1129 / S 473x565"
+    },
+    {
+      "id": "coin",
+      "name": "Монета",
+      "tags": ["монета", "деньги", "валюта", "награда", "плата", "coin"],
+      "main-L": "Монета.svg",
+      "background-L": "Монета.svg",
+      "main-S": "Монета.svg",
+      "background-S": "Монета.svg",
+      "pairing": "по имени",
+      "verified": "L 287x189 / S 153x101"
+    },
+    {
+      "id": "headphones",
+      "name": "Наушники",
+      "tags": ["наушники", "звук", "музыка", "аудио", "прослушивание", "headphones"],
+      "main-L": "Наушники.svg",
+      "background-L": "Наушники.svg",
+      "main-S": "Наушники.svg",
+      "background-S": "Наушники.svg",
+      "pairing": "по имени",
+      "verified": "L 889x692 / S 445x346"
+    },
+    {
+      "id": "puzzle",
+      "name": "Пазлы",
+      "tags": ["пазлы", "головоломка", "задача", "игрушка", "сборка", "puzzle"],
+      "main-L": "Пазлы.svg",
+      "background-L": "Пазлы.svg",
+      "main-S": "Пазлы.svg",
+      "background-S": "Пазлы.svg",
+      "pairing": "по имени",
+      "verified": "L 545x314 / S 273x157"
+    },
+    {
+      "id": "folder",
+      "name": "Папка",
+      "tags": ["папка", "документы", "архив", "офис", "файлы", "folder"],
+      "main-L": "Папка.svg",
+      "background-L": "Папка.svg",
+      "main-S": "Group 2136136337.svg",
+      "background-S": "Group 2136136342.svg",
+      "pairing": "L — по имени; S — по карте",
+      "verified": "S = 0.5x L (621x330 vs 1241x659), aspect 1.8832/1.8818; main↔background в S: 86% путей совпадают"
+    },
+    {
+      "id": "pen",
+      "name": "Ручка",
+      "tags": ["ручка", "письмо", "запись", "офис", "подпись", "pen"],
+      "main-L": "Ручка.svg",
+      "background-L": "Ручка.svg",
+      "main-S": "Group 2136136336.svg",
+      "background-S": "Group 2136136343.svg",
+      "pairing": "L — по имени; S — по карте",
+      "verified": "S = 0.5x L (255x143 vs 509x286), aspect 1.7797/1.7832; main↔background в S: 100% путей совпадают"
+    },
+    {
+      "id": "phone",
+      "name": "Телефон",
+      "tags": ["телефон", "смартфон", "связь", "звонки", "мобильный", "phone"],
+      "main-L": "Телефон.svg",
+      "background-L": "Телефон.svg",
+      "main-S": "Телефон.svg",
+      "background-S": "Телефон.svg",
+      "pairing": "по имени",
+      "verified": "L 797x462 / S 399x231"
+    },
+    {
+      "id": "tulips",
+      "name": "Тюльпаны",
+      "tags": ["тюльпаны", "цветы", "букет", "ваза", "праздник", "поздравление", "весна", "tulips"],
+      "main-L": "Group 2136136344.svg",
+      "background-L": "Group 2136136347.svg",
+      "main-S": "Group 2136136345.svg",
+      "background-S": "Group 2136136346.svg",
+      "pairing": "по карте (нет имени)",
+      "verified": "L 344↔347: path-set идентичен (131 п.), aspect 0.7901; S 345↔346: 100% путей; S ≈ 0.547x L"
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Vector",
+      "files": [
+        { "file": "Vector.svg", "type": "main", "size": "L" },
+        { "file": "Vector.svg", "type": "background", "size": "L" }
+      ],
+      "reason": "17x24, один путь-капля (main fill=white, background fill=#D7CDF5=bg-1). Декоративный фрагмент/остаток из Figma, не объект. В каталог не берём."
+    }
+  ],
+  "palettes": [
+    { "scheme": "lilac", "size": "L", "file": "Group 2136136332.svg" },
+    { "scheme": "peach", "size": "L", "file": "Group 2136136333.svg" },
+    { "scheme": "mint", "size": "L", "file": "Group 2136136334.svg" },
+    { "scheme": "lilac", "size": "S", "file": "Group 2136136338.svg" },
+    { "scheme": "peach", "size": "S", "file": "Group 2136136339.svg" },
+    { "scheme": "mint", "size": "S", "file": "Group 2136136340.svg" }
+  ],
+  "backdrops": [
+    { "scheme": "lilac", "size": "L", "file": "Фон.svg" },
+    { "scheme": "peach", "size": "L", "file": "Фон-2.svg" },
+    { "scheme": "mint", "size": "L", "file": "Фон-1.svg" },
+    { "scheme": "lilac", "size": "S", "file": "Фон.svg" },
+    { "scheme": "peach", "size": "S", "file": "Фон-2.svg" },
+    { "scheme": "mint", "size": "S", "file": "Фон-1.svg" }
+  ],
+  "referenceScheme": "lilac"
+}

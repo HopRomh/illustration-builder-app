@@ -1,0 +1,36 @@
+{
+  "name": "illustration-builder",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "npm run sync-library",
+    "dev": "vite",
+    "prebuild": "npm run sync-library",
+    "build": "tsc -b && vite build",
+    "start": "tsx server/index.ts",
+    "catalog": "tsx scripts/build-catalog.ts && npm run sync-library",
+    "sync-library": "tsx scripts/sync-library.ts",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "fabric": "^7.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.19.2",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.2.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}

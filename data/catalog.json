@@ -1,0 +1,581 @@
+{
+  "items": [
+    {
+      "id": "book",
+      "name": "Книга",
+      "tags": [
+        "книга",
+        "чтение",
+        "учёба",
+        "знания",
+        "литература",
+        "образование",
+        "book"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Книга.svg",
+          "viewBox": [
+            0,
+            0,
+            1446,
+            977
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Книга.svg",
+          "viewBox": [
+            0,
+            0,
+            1446,
+            977
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Group 2136136335.svg",
+          "viewBox": [
+            0,
+            0,
+            723,
+            489
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Group 2136136341.svg",
+          "viewBox": [
+            0,
+            0,
+            723,
+            489
+          ]
+        }
+      }
+    },
+    {
+      "id": "wallet",
+      "name": "Кошелек",
+      "tags": [
+        "кошелек",
+        "деньги",
+        "финансы",
+        "оплата",
+        "бюджет",
+        "wallet"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Кошелек.svg",
+          "viewBox": [
+            0,
+            0,
+            631,
+            397
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Кошелек.svg",
+          "viewBox": [
+            0,
+            0,
+            631,
+            397
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Кошелек.svg",
+          "viewBox": [
+            0,
+            0,
+            316,
+            199
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Кошелек.svg",
+          "viewBox": [
+            0,
+            0,
+            316,
+            199
+          ]
+        }
+      }
+    },
+    {
+      "id": "lamp",
+      "name": "Лампа",
+      "tags": [
+        "лампа",
+        "свет",
+        "освещение",
+        "идея",
+        "яркость",
+        "lamp"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Лампа.svg",
+          "viewBox": [
+            0,
+            0,
+            946,
+            1129
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Лампа.svg",
+          "viewBox": [
+            0,
+            0,
+            946,
+            1129
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Лампа.svg",
+          "viewBox": [
+            0,
+            0,
+            473,
+            565
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Лампа.svg",
+          "viewBox": [
+            0,
+            0,
+            473,
+            565
+          ]
+        }
+      }
+    },
+    {
+      "id": "coin",
+      "name": "Монета",
+      "tags": [
+        "монета",
+        "деньги",
+        "валюта",
+        "награда",
+        "плата",
+        "coin"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Монета.svg",
+          "viewBox": [
+            0,
+            0,
+            287,
+            189
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Монета.svg",
+          "viewBox": [
+            0,
+            0,
+            287,
+            189
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Монета.svg",
+          "viewBox": [
+            0,
+            0,
+            153,
+            101
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Монета.svg",
+          "viewBox": [
+            0,
+            0,
+            153,
+            101
+          ]
+        }
+      }
+    },
+    {
+      "id": "headphones",
+      "name": "Наушники",
+      "tags": [
+        "наушники",
+        "звук",
+        "музыка",
+        "аудио",
+        "прослушивание",
+        "headphones"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Наушники.svg",
+          "viewBox": [
+            0,
+            0,
+            889,
+            692
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Наушники.svg",
+          "viewBox": [
+            0,
+            0,
+            889,
+            692
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Наушники.svg",
+          "viewBox": [
+            0,
+            0,
+            445,
+            346
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Наушники.svg",
+          "viewBox": [
+            0,
+            0,
+            445,
+            346
+          ]
+        }
+      }
+    },
+    {
+      "id": "puzzle",
+      "name": "Пазлы",
+      "tags": [
+        "пазлы",
+        "головоломка",
+        "задача",
+        "игрушка",
+        "сборка",
+        "puzzle"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Пазлы.svg",
+          "viewBox": [
+            0,
+            0,
+            545,
+            314
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Пазлы.svg",
+          "viewBox": [
+            0,
+            0,
+            545,
+            314
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Пазлы.svg",
+          "viewBox": [
+            0,
+            0,
+            273,
+            157
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Пазлы.svg",
+          "viewBox": [
+            0,
+            0,
+            273,
+            157
+          ]
+        }
+      }
+    },
+    {
+      "id": "folder",
+      "name": "Папка",
+      "tags": [
+        "папка",
+        "документы",
+        "архив",
+        "офис",
+        "файлы",
+        "folder"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Папка.svg",
+          "viewBox": [
+            0,
+            0,
+            1241,
+            659
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Папка.svg",
+          "viewBox": [
+            0,
+            0,
+            1241,
+            659
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Group 2136136337.svg",
+          "viewBox": [
+            0,
+            0,
+            621,
+            330
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Group 2136136342.svg",
+          "viewBox": [
+            0,
+            0,
+            621,
+            330
+          ]
+        }
+      }
+    },
+    {
+      "id": "pen",
+      "name": "Ручка",
+      "tags": [
+        "ручка",
+        "письмо",
+        "запись",
+        "офис",
+        "подпись",
+        "pen"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Ручка.svg",
+          "viewBox": [
+            0,
+            0,
+            509,
+            286
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Ручка.svg",
+          "viewBox": [
+            0,
+            0,
+            509,
+            286
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Group 2136136336.svg",
+          "viewBox": [
+            0,
+            0,
+            255,
+            143
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Group 2136136343.svg",
+          "viewBox": [
+            0,
+            0,
+            255,
+            143
+          ]
+        }
+      }
+    },
+    {
+      "id": "phone",
+      "name": "Телефон",
+      "tags": [
+        "телефон",
+        "смартфон",
+        "связь",
+        "звонки",
+        "мобильный",
+        "phone"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Телефон.svg",
+          "viewBox": [
+            0,
+            0,
+            797,
+            462
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Телефон.svg",
+          "viewBox": [
+            0,
+            0,
+            797,
+            462
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Телефон.svg",
+          "viewBox": [
+            0,
+            0,
+            399,
+            231
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Телефон.svg",
+          "viewBox": [
+            0,
+            0,
+            399,
+            231
+          ]
+        }
+      }
+    },
+    {
+      "id": "tulips",
+      "name": "Тюльпаны",
+      "tags": [
+        "тюльпаны",
+        "цветы",
+        "букет",
+        "ваза",
+        "праздник",
+        "поздравление",
+        "весна",
+        "tulips"
+      ],
+      "variants": {
+        "main-L": {
+          "file": "assets/library/main/L/Group 2136136344.svg",
+          "viewBox": [
+            0,
+            0,
+            591,
+            748
+          ]
+        },
+        "background-L": {
+          "file": "assets/library/background/L/Group 2136136347.svg",
+          "viewBox": [
+            0,
+            0,
+            591,
+            748
+          ]
+        },
+        "main-S": {
+          "file": "assets/library/main/S/Group 2136136345.svg",
+          "viewBox": [
+            0,
+            0,
+            324,
+            409
+          ]
+        },
+        "background-S": {
+          "file": "assets/library/background/S/Group 2136136346.svg",
+          "viewBox": [
+            0,
+            0,
+            324,
+            409
+          ]
+        }
+      }
+    }
+  ],
+  "backdrops": [
+    {
+      "id": "lilac-L",
+      "scheme": "lilac",
+      "size": "L",
+      "file": "assets/library/backdrop/L/Фон.svg",
+      "viewBox": [
+        0,
+        0,
+        1000,
+        1000
+      ]
+    },
+    {
+      "id": "peach-L",
+      "scheme": "peach",
+      "size": "L",
+      "file": "assets/library/backdrop/L/Фон-2.svg",
+      "viewBox": [
+        0,
+        0,
+        1000,
+        1000
+      ]
+    },
+    {
+      "id": "mint-L",
+      "scheme": "mint",
+      "size": "L",
+      "file": "assets/library/backdrop/L/Фон-1.svg",
+      "viewBox": [
+        0,
+        0,
+        1000,
+        1000
+      ]
+    },
+    {
+      "id": "lilac-S",
+      "scheme": "lilac",
+      "size": "S",
+      "file": "assets/library/backdrop/S/Фон.svg",
+      "viewBox": [
+        0,
+        0,
+        500,
+        500
+      ]
+    },
+    {
+      "id": "peach-S",
+      "scheme": "peach",
+      "size": "S",
+      "file": "assets/library/backdrop/S/Фон-2.svg",
+      "viewBox": [
+        0,
+        0,
+        500,
+        500
+      ]
+    },
+    {
+      "id": "mint-S",
+      "scheme": "mint",
+      "size": "S",
+      "file": "assets/library/backdrop/S/Фон-1.svg",
+      "viewBox": [
+        0,
+        0,
+        500,
+        500
+      ]
+    }
+  ]
+}
