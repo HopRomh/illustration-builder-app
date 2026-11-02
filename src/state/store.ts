@@ -30,6 +30,8 @@ export interface AppState {
   scene: Scene;
   add(instance: Omit<Instance, 'uid' | 'scale'>): string;
   addMany(instances: Omit<Instance, 'uid' | 'scale'>[], focusIndex?: number): string[];
+  /** Заменяет композицию целиком одним set (один снапшот истории). */
+  setComposition(instances: Omit<Instance, 'uid' | 'scale'>[], focusIndex: number): string[];
   duplicate(uid: string): string | null;
   remove(uid: string): void;
   select(uid: string | null): void;
@@ -92,6 +94,23 @@ function withSceneSize(instances: Instance[], size: Size): Instance[] {
   });
 }
 
+/** uid, scale и missingVariant для массива входов addMany/setComposition. */
+function createInstances(
+  instances: Omit<Instance, 'uid' | 'scale'>[],
+  scale: number,
+): Instance[] {
+  return instances.map((instance) => {
+    const uid = nextUid();
+    const next: Instance = { ...instance, uid, scale };
+    if (hasVariant(instance.itemId, instance.variant, instance.size)) {
+      delete next.missingVariant;
+    } else {
+      next.missingVariant = true;
+    }
+    return next;
+  });
+}
+
 /**
  * Пока reconciler пишет clamped-координаты обратно в стор, подписка истории
  * должна обновить present, а не добавить новый шаг.
@@ -125,18 +144,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   addMany(instances, focusIndex) {
     if (instances.length === 0) return [];
 
-    const scale = getSceneScale(get().scene);
-    const created = instances.map((instance) => {
-      const uid = nextUid();
-      const next: Instance = { ...instance, uid, scale };
-      if (hasVariant(instance.itemId, instance.variant, instance.size)) {
-        delete next.missingVariant;
-      } else {
-        next.missingVariant = true;
-      }
-      return next;
-    });
-
+    const created = createInstances(instances, getSceneScale(get().scene));
     const requestedFocus =
       focusIndex === undefined || !Number.isFinite(focusIndex)
         ? created.length - 1
@@ -148,6 +156,24 @@ export const useAppStore = create<AppState>((set, get) => ({
       instances: [...state.instances, ...created],
       selectedUid: created[focus].uid,
     }));
+
+    return created.map((instance) => instance.uid);
+  },
+
+  setComposition(instances, focusIndex) {
+    if (instances.length === 0) return [];
+
+    const created = createInstances(instances, getSceneScale(get().scene));
+    const requestedFocus = Number.isFinite(focusIndex)
+      ? Math.trunc(focusIndex)
+      : created.length - 1;
+    const focus = Math.min(Math.max(requestedFocus, 0), created.length - 1);
+
+    // Замена целиком, а не добавление: один set — один снапшот истории.
+    set({
+      instances: created,
+      selectedUid: created[focus].uid,
+    });
 
     return created.map((instance) => instance.uid);
   },

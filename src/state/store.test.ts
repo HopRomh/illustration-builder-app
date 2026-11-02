@@ -517,6 +517,107 @@ describe('store: addMany', () => {
   });
 });
 
+describe('store: setComposition', () => {
+  function makeInputs(ids: string[]) {
+    return ids.map((itemId, index) => ({
+      itemId,
+      variant: index === 0 ? ('main' as const) : ('background' as const),
+      size: 'L' as const,
+      x: 100 + index,
+      y: 200 + index,
+      angle: 0,
+    }));
+  }
+
+  it('делает один set: одно уведомление подписчиков', () => {
+    let calls = 0;
+    const unsubscribe = useAppStore.subscribe(() => {
+      calls += 1;
+    });
+
+    useAppStore.getState().setComposition(makeInputs(['book', 'phone', 'lamp']), 0);
+    unsubscribe();
+
+    expect(calls).toBe(1);
+  });
+
+  it('заменяет текущую композицию, а не дописывает её', () => {
+    seed([makeInstance({ uid: 'old' })]);
+
+    const created = useAppStore
+      .getState()
+      .setComposition(makeInputs(['book', 'phone']), 1);
+
+    expect(current().map((instance) => instance.uid)).toEqual(created);
+    expect(current().map((instance) => instance.itemId)).toEqual([
+      'book',
+      'phone',
+    ]);
+    expect(useAppStore.getState().selectedUid).toBe(created[1]);
+  });
+
+  it('пустой вход — no-op без уведомления', () => {
+    seed([makeInstance({ uid: 'old' })]);
+
+    let calls = 0;
+    const unsubscribe = useAppStore.subscribe(() => {
+      calls += 1;
+    });
+    const created = useAppStore.getState().setComposition([], 0);
+    unsubscribe();
+
+    expect(created).toEqual([]);
+    expect(calls).toBe(0);
+    expect(uids()).toEqual(['old']);
+  });
+
+  it('клампит focusIndex в допустимый диапазон', () => {
+    const below = useAppStore
+      .getState()
+      .setComposition(makeInputs(['book', 'phone']), -5);
+    expect(useAppStore.getState().selectedUid).toBe(below[0]);
+
+    const above = useAppStore
+      .getState()
+      .setComposition(makeInputs(['book', 'phone']), 99);
+    expect(useAppStore.getState().selectedUid).toBe(above[1]);
+  });
+
+  it('берёт scale из сцены, ставит missingVariant и возвращает string[]', () => {
+    useAppStore.getState().setScene({ format: '4:3' });
+
+    const created = useAppStore.getState().setComposition(
+      [
+        {
+          itemId: 'book',
+          variant: 'main',
+          size: 'L',
+          x: 100,
+          y: 100,
+          angle: 0,
+        },
+        {
+          itemId: 'unknown-item',
+          variant: 'background',
+          size: 'L',
+          x: 200,
+          y: 200,
+          angle: 0,
+        },
+      ],
+      0,
+    );
+
+    expect(Array.isArray(created)).toBe(true);
+    expect(created).toHaveLength(2);
+    expect(current()[0].scale).toBe(0.4);
+    expect(current()[1].scale).toBe(0.4);
+    expect(current()[0].missingVariant).toBeUndefined();
+    expect(current()[1].missingVariant).toBe(true);
+    expect(useAppStore.getState().selectedUid).toBe(created[0]);
+  });
+});
+
 describe('store: replaceInstances и updateFromCanvas', () => {
   it('replaceInstances сбрасывает невалидный selectedUid', () => {
     seed([makeInstance({ uid: 'a' })], 'a');

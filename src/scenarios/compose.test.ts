@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import { getSceneScale } from '../canvas/sizing';
 import { catalog } from '../library/catalog';
 import type { LibraryItem, Scene } from '../types';
 import { composeScenario } from './compose';
+import {
+  SYNONYMS,
+  buildFallbackPlans,
+  composeFallbackPlan,
+  scoreItems,
+  tokenizeText,
+} from './metaphorFallback';
 
 const scene: Scene = {
   format: '1:1',
@@ -166,5 +174,42 @@ describe('compose: composeScenario', () => {
     composeScenario(selected, scene, items);
 
     expect(selected).toEqual(snapshot);
+  });
+});
+
+describe('compose: fallback-планы Сценария 1', () => {
+  const tokens = tokenizeText(
+    'сложности в работе, которые решаются по шагам',
+  );
+  const scored = scoreItems(tokens, catalog.items, SYNONYMS);
+  const plans = buildFallbackPlans(scored, scene);
+
+  it('строит три варианта на фразе приёмки', () => {
+    expect(plans).toHaveLength(3);
+    expect(new Set(plans.map((plan) => plan.label)).size).toBe(3);
+  });
+
+  it('даёт разные inputs для трёх вариантов', () => {
+    const signatures = plans.map((plan) => {
+      const composition = composeFallbackPlan(plan, scene);
+      return composition.inputs
+        .map(
+          (input) =>
+            `${input.itemId}:${input.variant}:${input.x.toFixed(2)}:${input.y.toFixed(2)}`,
+        )
+        .join('|');
+    });
+
+    expect(new Set(signatures).size).toBe(3);
+  });
+
+  it('держит фокус main и previewScale сцены', () => {
+    for (const plan of plans) {
+      const composition = composeFallbackPlan(plan, scene);
+
+      expect(composition.focusIndex).toBeGreaterThanOrEqual(0);
+      expect(composition.inputs[composition.focusIndex].variant).toBe('main');
+      expect(composition.previewScale).toBe(getSceneScale(scene));
+    }
   });
 });

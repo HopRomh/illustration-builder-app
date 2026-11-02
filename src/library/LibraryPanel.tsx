@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FORMATS } from '../canvas/sizing';
 import { useAppStore } from '../state/store';
 import type { LibraryItem } from '../types';
+import { MetaphorScenario } from '../scenarios/MetaphorScenario';
 import { ObjectsScenario } from '../scenarios/ObjectsScenario';
 import { catalog } from './catalog';
 import { ObjectCard } from './ObjectCard';
@@ -63,7 +64,10 @@ export function LibraryPanel() {
 
       {tab === 'scenarios' ? (
         <div className="flex-1 overflow-y-auto p-4">
-          <ObjectsScenario />
+          <div className="flex flex-col gap-6">
+            <MetaphorScenario />
+            <ObjectsScenario />
+          </div>
         </div>
       ) : (
         <>

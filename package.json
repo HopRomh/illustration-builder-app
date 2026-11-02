@@ -6,6 +6,7 @@
   "scripts": {
     "predev": "npm run sync-library",
     "dev": "vite",
+    "dev:api": "tsx watch server/index.ts",
     "prebuild": "npm run sync-library",
     "build": "tsc -b && vite build",
     "start": "tsx server/index.ts",
