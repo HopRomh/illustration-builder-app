@@ -1,6 +1,6 @@
 import { Canvas, Point } from 'fabric';
 import type { FabricObject, TPointerEventInfo } from 'fabric';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { catalog } from '../library/catalog';
 import { useAppStore } from '../state/store';
 import type { Instance } from '../state/store';
@@ -118,6 +118,7 @@ function findVariant(instance: Instance) {
 
 export function CanvasStage() {
   const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const format = useAppStore((state) => state.scene.format);
   const { width: canvasWidth, height: canvasHeight } = FORMATS[format];
 
@@ -143,6 +144,8 @@ export function CanvasStage() {
     const loadedKeysByUid = new Map<string, string>();
     const objectUid = new WeakMap<FabricObject, string>();
     const pendingUids = new Set<string>();
+    /** Ключи uid+variant, по которым toast уже показан (не спамим при каждом sync). */
+    const notifiedMissing = new Set<string>();
     let pendingSelectionUid: string | null = null;
     let suppressSelectionSync = false;
     let disposed = false;
@@ -241,6 +244,7 @@ export function CanvasStage() {
       if (disposed) return;
 
       const requested = useAppStore.getState().instances;
+      const missingThisPass = new Set<string>();
 
       for (const request of requested) {
         if (pendingUids.has(request.uid)) continue;
@@ -254,6 +258,30 @@ export function CanvasStage() {
 
         const variant = findVariant(request);
         if (!variant) {
+          const missingKey = `${request.uid}:${variantKey}`;
+          // Старый L-объект нельзя оставлять при переключении на S: иначе
+          // на холсте смешиваются размеры. Убираем его и сообщаем причину.
+          if (existing) {
+            suppressSelectionSync = true;
+            try {
+              canvas.remove(existing);
+            } finally {
+              suppressSelectionSync = false;
+            }
+            objectsByUid.delete(request.uid);
+            loadedKeysByUid.delete(request.uid);
+            objectUid.delete(existing);
+            if (pendingSelectionUid === request.uid) pendingSelectionUid = null;
+
+            if (!notifiedMissing.has(missingKey)) {
+              notifiedMissing.add(missingKey);
+              const name =
+                catalog.items.find((entry) => entry.id === request.itemId)?.name ??
+                request.itemId;
+              missingThisPass.add(name);
+            }
+          }
+
           // missingVariant уже показан бейджем в панелях; не спамим консоль.
           if (!request.missingVariant) {
             console.error(
@@ -262,6 +290,8 @@ export function CanvasStage() {
           }
           continue;
         }
+
+        notifiedMissing.delete(`${request.uid}:${variantKey}`);
 
         pendingUids.add(request.uid);
         try {
@@ -322,6 +352,16 @@ export function CanvasStage() {
         } finally {
           pendingUids.delete(request.uid);
         }
+      }
+
+      if (missingThisPass.size > 0) {
+        const names = [...missingThisPass];
+        const size = useAppStore.getState().scene.size;
+        setToast(
+          `Нет варианта ${size} для: ${names.join(', ')}. ${
+            names.length === 1 ? 'Объект скрыт' : 'Объекты скрыты'
+          } с холста.`,
+        );
       }
 
       // После всех await берём актуальный порядок и координаты.
@@ -592,7 +632,7 @@ export function CanvasStage() {
   const ratio = canvasWidth / canvasHeight;
 
   return (
-    <div className="flex min-h-0 flex-1 items-center justify-center bg-neutral-300 p-6">
+    <div className="relative flex min-h-0 flex-1 items-center justify-center bg-neutral-300 p-6">
       <div
         className="w-full overflow-hidden bg-white shadow-xl ring-1 ring-black/10"
         style={{
@@ -602,6 +642,24 @@ export function CanvasStage() {
       >
         <canvas ref={canvasElementRef} aria-label={`Холст ${canvasWidth} на ${canvasHeight}`} />
       </div>
+
+      {toast ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute bottom-4 left-1/2 z-10 flex max-w-md -translate-x-1/2 items-start gap-3 rounded-md bg-neutral-900 px-3 py-2 text-xs text-white shadow-lg"
+        >
+          <span>{toast}</span>
+          <button
+            type="button"
+            aria-label="Скрыть уведомление"
+            className="shrink-0 text-base leading-none text-neutral-400 transition-colors hover:text-white"
+            onClick={() => setToast(null)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

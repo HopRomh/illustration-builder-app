@@ -1,9 +1,10 @@
 /**
  * Перекраска по ролям палитры (§8).
  *
- * Объекты в assets/library/ выгружены в референсной схеме lilac. При загрузке
- * SVG каждый Fabric-объект один раз получает роль (WeakMap), а смена схемы
- * только подставляет цвет той же роли из целевой палитры. Fabric-объекты,
+ * Объекты в assets/library/ выгружены в референсной схеме, которая указана
+ * в data/object-map.json (`referenceScheme`). При загрузке SVG каждый
+ * Fabric-объект один раз получает роли fill и stroke (WeakMap), а смена схемы
+ * только подставляет цвета тех же ролей из целевой палитры. Fabric-объекты,
  * их uid, координаты, углы и порядок слоёв не пересоздаются, кеш loadSvg
  * не инвалидируется.
  *
@@ -15,20 +16,52 @@
  * именованный цвет нормализуется в #FFFFFF (роль obj-white).
  */
 import palettesJson from '../../data/palettes.json';
+import objectMapJson from '../../data/object-map.json';
 import type { FabricObject } from 'fabric';
 import type { Palette, RoleId, SchemeId } from '../types';
 
-/** Референсная схема библиотеки. Константа, object-map.json в runtime не тянем. */
-export const REFERENCE_SCHEME: SchemeId = 'lilac';
-
 export const PALETTES = palettesJson as unknown as Palette[];
+
+interface ReferenceConfig {
+  referenceScheme?: unknown;
+}
+
+/**
+ * Референсная схема библиотеки. Читается из карты, а не хардкодится:
+ * при смене referenceScheme перекраска продолжит работать без правок кода.
+ * Если карта пуста/содержит неизвестную схему — берём первую палитру,
+ * затем lilac как последний безопасный fallback.
+ */
+export function resolveReferenceScheme(
+  config: ReferenceConfig = objectMapJson,
+  palettes: readonly Palette[] = PALETTES,
+): SchemeId {
+  const candidate = config.referenceScheme;
+  if (
+    typeof candidate === 'string' &&
+    palettes.some((palette) => palette.scheme === candidate)
+  ) {
+    return candidate;
+  }
+
+  return palettes[0]?.scheme ?? 'lilac';
+}
+
+export const REFERENCE_SCHEME: SchemeId = resolveReferenceScheme();
 
 const NAMED_COLORS: Record<string, string> = {
   white: '#FFFFFF',
 };
 
 const roleTables = new WeakMap<Palette, Map<string, RoleId>>();
-const roleByObject = new WeakMap<FabricObject, RoleId>();
+
+/** fill и stroke классифицируются независимо: у path они могут быть из разных ролей. */
+interface ObjectRoles {
+  fill: RoleId | null;
+  stroke: RoleId | null;
+}
+
+const rolesByObject = new WeakMap<FabricObject, ObjectRoles>();
 
 /** Нормализует цвет к #RRGGBB в верхнем регистре; null — не цвет палитры. */
 export function normalizeColor(value: string | null | undefined): string | null {
@@ -130,18 +163,18 @@ export function tagRoles(
   root: FabricObject,
   palette: Palette = getPalette(REFERENCE_SCHEME),
 ): void {
-  const role =
-    classifyRole(colorOf(root.fill), palette) ?? classifyRole(colorOf(root.stroke), palette);
+  const fill = classifyRole(colorOf(root.fill), palette);
+  const stroke = classifyRole(colorOf(root.stroke), palette);
 
-  if (role) roleByObject.set(root, role);
+  if (fill || stroke) rolesByObject.set(root, { fill, stroke });
 
   for (const child of childrenOf(root)) tagRoles(child, palette);
 }
 
 /**
- * Перекрашивает группу in-place: у каждого объекта с известной ролью
- * fill/stroke заменяется цветом той же роли из целевой схемы.
- * Структура SVG, uid, позиция, угол и слой не меняются.
+ * Перекрашивает группу in-place: fill и stroke каждого объекта получают
+ * цвет своей роли из целевой схемы. Структура SVG, uid, позиция, угол и
+ * слой не меняются.
  */
 export function applyScheme(
   root: FabricObject,
@@ -151,16 +184,13 @@ export function applyScheme(
   const palette = getPalette(scheme, palettes);
 
   const visit = (object: FabricObject): void => {
-    const role = roleByObject.get(object);
+    const roles = rolesByObject.get(object);
 
-    if (role) {
-      const color = palette.colors[role];
-      if (normalizeColor(colorOf(object.fill))) {
-        object.set('fill', color);
-      }
-      if (normalizeColor(colorOf(object.stroke))) {
-        object.set('stroke', color);
-      }
+    if (roles?.fill && normalizeColor(colorOf(object.fill))) {
+      object.set('fill', palette.colors[roles.fill]);
+    }
+    if (roles?.stroke && normalizeColor(colorOf(object.stroke))) {
+      object.set('stroke', palette.colors[roles.stroke]);
     }
 
     object.dirty = true;

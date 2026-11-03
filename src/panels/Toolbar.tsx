@@ -1,7 +1,7 @@
 import { getActiveCanvas, resetViewport } from '../canvas/canvasRegistry';
 import { exportSvg } from '../canvas/exportSvg';
 import { PALETTES } from '../canvas/recolor';
-import type { Format, SchemeId, Size } from '../types';
+import type { Format, Size } from '../types';
 import { useHistoryStore } from '../state/historyStore';
 import { useAppStore } from '../state/store';
 
@@ -24,11 +24,18 @@ const sizes: { id: Size; label: string }[] = [
   { id: 'S', label: 'S' },
 ];
 
-const schemes: { id: SchemeId; label: string }[] = [
-  { id: 'lilac', label: 'Сиреневая' },
-  { id: 'peach', label: 'Персиковая' },
-  { id: 'mint', label: 'Мятная' },
-];
+const schemeLabels: Record<string, string> = {
+  lilac: 'Сиреневая',
+  peach: 'Персиковая',
+  mint: 'Мятная',
+};
+
+// Список схем — из данных, а не из отдельного hardcode: новая палитра
+// в palettes.json появится в тулбаре автоматически (label — fallback на id).
+const schemes = PALETTES.map((palette) => ({
+  id: palette.scheme,
+  label: schemeLabels[palette.scheme] ?? palette.scheme,
+}));
 
 export function Toolbar() {
   const selectedUid = useAppStore((state) => state.selectedUid);

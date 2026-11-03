@@ -1,9 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+import { REFERENCE_SCHEME } from '../canvas/recolor';
+import { loadRecoloredSvg } from '../canvas/recolorSvg';
 import { FORMATS } from '../canvas/sizing';
 import { catalog } from '../library/catalog';
 import { useAppStore } from '../state/store';
-import type { Scene, Size, Variant } from '../types';
+import type { Scene, SchemeId, Size, Variant } from '../types';
 import {
   SYNONYMS,
   buildFallbackPlans,
@@ -49,6 +51,78 @@ function buildPreviews(
       composition: composeFallbackPlan(plan, scene),
     }))
     .filter((entry) => entry.composition.inputs.length > 0);
+}
+
+/**
+ * Превью-объект всегда в lilac, поэтому для peach/mint перекрашиваем SVG
+ * и отдаём его как data-URL. Пока идёт загрузка, объект не рисуем —
+ * иначе на долю секунды вспыхнул бы неверный цвет.
+ */
+function useVariantHref(file: string, scheme: SchemeId): string | null {
+  const [href, setHref] = useState<string | null>(() =>
+    scheme === REFERENCE_SCHEME ? encodeURI(file) : null,
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (scheme === REFERENCE_SCHEME) {
+      setHref(encodeURI(file));
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setHref(null);
+    void loadRecoloredSvg(file, scheme)
+      .then((dataUrl) => {
+        if (!cancelled) setHref(dataUrl);
+      })
+      .catch((error: unknown) => {
+        console.error('MetaphorScenario: не удалось перекрасить превью', error);
+        if (!cancelled) setHref(encodeURI(file));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [file, scheme]);
+
+  return href;
+}
+
+interface PreviewObjectProps {
+  file: string;
+  scheme: SchemeId;
+  x: number;
+  y: number;
+  angle: number;
+  width: number;
+  height: number;
+}
+
+function PreviewObject({
+  file,
+  scheme,
+  x,
+  y,
+  angle,
+  width,
+  height,
+}: PreviewObjectProps) {
+  const href = useVariantHref(file, scheme);
+  if (!href) return null;
+
+  return (
+    <image
+      href={href}
+      x={-width / 2}
+      y={-height / 2}
+      width={width}
+      height={height}
+      transform={`translate(${x} ${y}) rotate(${angle})`}
+    />
+  );
 }
 
 interface PreviewCardProps {
@@ -103,14 +177,15 @@ function PreviewCard({ preview, scene, onOpen }: PreviewCardProps) {
             variant.viewBox[3] * preview.composition.previewScale;
 
           return (
-            <image
+            <PreviewObject
               key={`${input.itemId}-${index}`}
-              href={encodeURI(variant.file)}
-              x={-objectWidth / 2}
-              y={-objectHeight / 2}
+              file={variant.file}
+              scheme={scene.scheme}
+              x={input.x}
+              y={input.y}
+              angle={input.angle}
               width={objectWidth}
               height={objectHeight}
-              transform={`translate(${input.x} ${input.y}) rotate(${input.angle})`}
             />
           );
         })}

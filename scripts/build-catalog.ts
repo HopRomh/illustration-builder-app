@@ -113,6 +113,41 @@ const BG_COL_ROLES: RoleId[] = ['bg-1', 'bg-2', 'bg-3', 'bg-black'];
 const OBJ_COL_ROLES: RoleId[] = ['obj-1', 'obj-2', 'obj-3', 'obj-white'];
 const ALL_ROLES: RoleId[] = [...BG_COL_ROLES, ...OBJ_COL_ROLES];
 
+/**
+ * #FFFFFF — нейтральный белый (блик/фон), а не цвет объекта. В текущих
+ * палитрах он совпадает с obj-white, но предупреждение о подложках для него
+ * не выдаём: белый допустим в декоративных элементах фона.
+ */
+export const NEUTRAL_BACKDROP_WHITE = '#FFFFFF';
+
+export type BackdropColorRole =
+  | 'bg-1'
+  | 'bg-2'
+  | 'bg-3'
+  | 'bg-black'
+  | 'neutral-white'
+  | 'obj-*'
+  | 'вне палитр';
+
+/**
+ * Роль цвета в подложке конкретной схемы. Сначала проверяются bg-роли этой
+ * схемы (один и тот же HEX может быть bg в одной схеме и obj в другой),
+ * затем цвета объектов. #FFFFFF считается нейтральным.
+ */
+export function classifyBackdropColor(
+  hex: string,
+  palette: Palette,
+  objRoleColors: ReadonlySet<string>,
+): BackdropColorRole {
+  if (hex === palette.colors['bg-1']) return 'bg-1';
+  if (hex === palette.colors['bg-2']) return 'bg-2';
+  if (hex === palette.colors['bg-3']) return 'bg-3';
+  if (hex === palette.colors['bg-black']) return 'bg-black';
+  if (hex === NEUTRAL_BACKDROP_WHITE) return 'neutral-white';
+  if (objRoleColors.has(hex)) return 'obj-*';
+  return 'вне палитр';
+}
+
 const LIBRARY_DIR = 'assets/library';
 const RAW_DIR = 'assets/raw';
 
@@ -1324,6 +1359,7 @@ export function buildReport(d: ReportData): string {
   p('## 6. Подложки и их схемы');
   p();
   p('Цвет основного прямоугольника подложки сверен с bg-1 (допустимо bg-2/bg-3) палитры L схемы.');
+  p('`#FFFFFF` считается нейтральным белым, а не цветом объекта; использование `obj-1`/`obj-2`/`obj-3` (и любого obj-white, отличного от белого) в подложке даёт предупреждение в разделе 8.');
   p();
   p('| Файл | Размер | Схема | Основной rect | Роль в L | Видимые цвета (fill/stroke) | Статус |');
   p('| --- | --- | --- | --- | --- | --- | --- |');
@@ -1432,19 +1468,17 @@ function main(): void {
     const rowRoles = new Map<string, string[]>();
     const colorParts: string[] = [];
     for (const [hex, stats] of analysis.colors) {
-      const role =
-        hex === paletteL.colors['bg-1'] ? 'bg-1'
-        : hex === paletteL.colors['bg-2'] ? 'bg-2'
-        : hex === paletteL.colors['bg-3'] ? 'bg-3'
-        : hex === paletteL.colors['bg-black'] ? 'bg-black'
-        : objRoleColors.has(hex) ? 'obj-*'
-        : 'вне палитр';
+      const role = classifyBackdropColor(hex, paletteL, objRoleColors);
       if (!rowRoles.has(role)) rowRoles.set(role, []);
       rowRoles.get(role)!.push(hex);
       colorParts.push(`${hex}=${stats.fillCount > 0 ? `${stats.fillCount}f` : ''}${stats.strokeCount > 0 ? `${stats.strokeCount}s` : ''}`);
-      // декоративные элементы подложки могут использовать цвета объектов — это нормально;
-      // предупреждаем только о цветах, которых нет ни в одной палитре
-      if (role === 'вне палитр') {
+      // Цвета объектов (obj-1/2/3, obj-white) в подложке — нарушение §3.4.
+      // Исключение — нейтральный #FFFFFF: он не считается цветом объекта.
+      if (role === 'obj-*') {
+        warnings.push(
+          `подложка ${label}: используется цвет объекта ${hex} (${stats.fillCount}f/${stats.strokeCount}s).`,
+        );
+      } else if (role === 'вне палитр') {
         warnings.push(`подложка ${label}: цвет вне палитр ${hex} (${stats.fillCount}f/${stats.strokeCount}s).`);
       }
     }
@@ -1462,7 +1496,10 @@ function main(): void {
       mainRectFill: analysis.mainRectFill,
       bgRole,
       colors: colorParts.join(', '),
-      status: rowRoles.has('вне палитр') ? '⚠️ см. раздел 8' : 'ok',
+      status:
+        rowRoles.has('obj-*') || rowRoles.has('вне палитр')
+          ? '⚠️ см. раздел 8'
+          : 'ok',
     });
   }
 

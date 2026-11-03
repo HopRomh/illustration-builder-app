@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import type { FabricObject } from 'fabric';
-import { applyScheme, classifyRole, getPalette, normalizeColor, tagRoles } from './recolor';
+import objectMap from '../../data/object-map.json';
+import {
+  applyScheme,
+  classifyRole,
+  getPalette,
+  normalizeColor,
+  PALETTES,
+  REFERENCE_SCHEME,
+  resolveReferenceScheme,
+  tagRoles,
+} from './recolor';
 
 interface MockObject {
   fill: string | null;
@@ -11,10 +21,14 @@ interface MockObject {
   set(key: string | Record<string, unknown>, value?: unknown): MockObject;
 }
 
-function mockObject(fill: string | null, children: MockObject[] = []): MockObject {
+function mockObject(
+  fill: string | null,
+  children: MockObject[] = [],
+  stroke: string | null = null,
+): MockObject {
   const object: MockObject = {
     fill,
-    stroke: null,
+    stroke,
     dirty: false,
     children,
     getObjects: () => object.children,
@@ -82,6 +96,23 @@ describe('recolor: classifyRole', () => {
   });
 });
 
+describe('recolor: референсная схема', () => {
+  it('читает referenceScheme из object-map.json', () => {
+    expect(REFERENCE_SCHEME).toBe(objectMap.referenceScheme);
+  });
+
+  it('принимает валидную схему из карты', () => {
+    expect(resolveReferenceScheme({ referenceScheme: 'peach' }, PALETTES)).toBe('peach');
+  });
+
+  it('падает обратно на первую палитру при пустой или неизвестной карте', () => {
+    expect(resolveReferenceScheme({}, PALETTES)).toBe(PALETTES[0].scheme);
+    expect(resolveReferenceScheme({ referenceScheme: 'unknown' }, PALETTES)).toBe(
+      PALETTES[0].scheme,
+    );
+  });
+});
+
 describe('recolor: tagRoles и applyScheme', () => {
   it('перекрашивает вложенные объекты по сохранённым ролям', () => {
     const obj1 = mockObject('#F9ECB0');
@@ -122,6 +153,29 @@ describe('recolor: tagRoles и applyScheme', () => {
 
     expect(unknown.fill).toBe('#123456');
     expect(gradient.fill).toBe('url(#paint0)');
+  });
+
+  it('перекрашивает fill и stroke независимо', () => {
+    // fill — obj-2, stroke — bg-3: у них разные роли в референсной схеме.
+    const mixed = mockObject('#F9A3AA', [], '#7864D7');
+    const group = mockObject(null, [mixed]);
+
+    tagRoles(asFabric(group));
+    applyScheme(asFabric(group), 'mint');
+
+    expect(mixed.fill).toBe('#6D7BFC'); // mint:obj-2
+    expect(mixed.stroke).toBe('#5ABEBE'); // mint:bg-3
+  });
+
+  it('не подменяет stroke, если у него нет роли', () => {
+    const obj = mockObject('#F9A3AA', [], '#123456');
+    const group = mockObject(null, [obj]);
+
+    tagRoles(asFabric(group));
+    applyScheme(asFabric(group), 'peach');
+
+    expect(obj.fill).toBe('#80DADA');
+    expect(obj.stroke).toBe('#123456');
   });
 
   it('помечает объекты dirty для перерисовки Fabric', () => {
