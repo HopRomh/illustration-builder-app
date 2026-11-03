@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "predev": "npm run sync-library",
     "dev": "vite",
@@ -19,6 +22,7 @@
     "fabric": "^7.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "tsx": "^4.23.15",
     "zustand": "^5.0.16"
   },
   "devDependencies": {
@@ -29,7 +33,6 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.2.1",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
